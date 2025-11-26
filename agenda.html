@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Agenda Digital </title>
+<script src="https://unpkg.com/@supabase/supabase-js"></script>
+<style>
+/* ===================== VARIÁVEIS ===================== */
+:root{
+  --bg:#08060a;
+  --surface:#121018;
+  --muted:#bfb7d6;
+  --accent:#8a46ff;
+  --accent-2:#c39bff;
+  --card:#161319;
+  --radius:14px;
+  --gap:18px;
+}
+
+/* ===================== RESET ===================== */
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Segoe UI', Poppins, system-ui;
+  background: linear-gradient(180deg,var(--bg),#050205);
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  padding:20px;
+  display:flex;
+  justify-content:center;
+}
+.container{
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding:25px 20px;
+  width:100%;
+  max-width:480px;
+  box-shadow:0 6px 25px rgba(0,0,0,0.3);
+}
+
+/* ===================== LOGO ===================== */
+h1{
+  text-align:center;
+  margin-bottom:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  font-size:2rem;
+  color: var(--accent-2);
+}
+h1 img{
+  width:95px;
+  height:95px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid var(--accent);
+}
+
+/* ===================== FORMULÁRIO ===================== */
+label{
+  display:block;
+  margin-bottom:5px;
+  font-weight:600;
+  color: var(--accent-2);
+}
+input, select{
+  width:100%;
+  padding:12px;
+  font-size:1rem;
+  border-radius: var(--radius);
+  border:1px solid rgba(255,255,255,0.1);
+  background: var(--card);
+  color:#fff;
+  margin-bottom:12px;
+}
+input:focus, select:focus{
+  outline:none;
+  border-color: var(--accent);
+}
+input[readonly]{
+  background:#1a1622;
+  color:#aaa;
+  cursor:not-allowed;
+}
+button{
+  background: linear-gradient(90deg,var(--accent),var(--accent-2));
+  color:#fff;
+  font-weight:bold;
+  border:none;
+  padding:12px;
+  border-radius: var(--radius);
+  cursor:pointer;
+  transition:0.3s;
+}
+button:hover{
+  background: linear-gradient(90deg,var(--accent-2),var(--accent));
+}
+
+/* ===================== QUADRO DE HORÁRIOS ===================== */
+#quadro-horarios{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:5px;
+}
+.horario{
+  flex:1 0 30%;
+  text-align:center;
+  padding:10px 12px;
+  border-radius: var(--radius);
+  cursor:pointer;
+  background:#33004d;
+  color:#fff;
+  border:1px solid var(--accent);
+  font-weight:600;
+  transition:0.2s;
+}
+.horario.ocupado{
+  background:#4b004b;
+  border-color:#ff33cc;
+  cursor:not-allowed;
+  color:#999;
+}
+.horario.selecionado{
+  background: var(--accent);
+  color:#fff;
+}
+
+/* ===================== AGENDAMENTOS ===================== */
+h2{
+  margin-bottom:15px;
+  color: var(--accent-2);
+  font-size:1.5rem;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  padding-bottom:5px;
+}
+ul{
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+.dia{
+  background:#33004d;
+  color: #fff;
+  font-weight:bold;
+  padding:8px 12px;
+  border-radius: var(--radius);
+  margin-top:20px;
+  font-size:1.1rem;
+}
+.horario-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#1a1622;
+  padding:10px 12px;
+  margin-top:8px;
+  border-radius: var(--radius);
+  box-shadow:0 2px 6px rgba(0,0,0,0.4);
+  font-size:0.95rem;
+  transition:0.2s;
+}
+.horario-item:hover{
+  background:#2e1f49;
+}
+.horario-item span{
+  font-weight:600;
+  color:#fff;
+  flex-grow:1;
+}
+
+/* ===================== RESPONSIVIDADE ===================== */
+/* === MOBILE (até 480px) === */
+@media (max-width: 480px) {
+
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Container do formulário (card) */
+  .container,
+  .agenda-box,
+  .card {
+    width: 92% !important;
+    max-width: 360px;
+    margin: 20px auto !important;
+    transform: none !important;
+    left: 0 !important;
+  }
+
+  h1 {
+    font-size: 1.6rem !important;
+    text-align: center;
+  }
+
+  h1 img {
+    width: 70px;
+    height: 70px;
+  }
+
+  /* Inputs */
+  input, select, button {
+    font-size: 1rem !important;
+    padding: 10px !important;
+  }
+
+  .horario {
+    flex: 1 0 100%;
+    font-size: 0.95rem;
+  }
+
+  .horario-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .horario-item button {
+    align-self: flex-end;
+  }
+
+  /* Botões */
+  button {
+    width: 100%;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+<h1> Agenda Digital</h1>
+
+<form id="form-agenda">
+  <label>Nome do Cliente</label>
+  <input type="text" id="nome" readonly />
+
+  <label>Trança Escolhida</label>
+  <input type="text" id="trancaEscolhida" readonly />
+
+  <label for="data">Selecione uma data</label>
+  <input type="date" id="data" required />
+
+  <input type="hidden" id="horario" required />
+  <div id="quadro-horarios"></div>
+  <button type="submit">Agendar</button>
+</form>
+
+<h2>Agendamentos</h2>
+<ul id="lista"></ul>
+</div>
+
+<script>
+const SUPABASE_URL = "https://zlifgtznogdejoibzmpu.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpsaWZndHpub2dkZWpvaWJ6bXB1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTM1NDIxOCwiZXhwIjoyMDc0OTMwMjE4fQ.jl6K3Hr0U0KGN7TvvUBy6ssJj8EvqGk1kw0Lq08-eDU"; 
+const { createClient } = supabase;
+const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ===================== LOGIN =====================
+const tipoUsuario = sessionStorage.getItem("tipoUsuario");
+const nomeCliente = sessionStorage.getItem("nomeCliente") || "";
+if(!tipoUsuario){ window.location.href = "login.html"; }
+
+const nomeInput = document.getElementById("nome");
+if(tipoUsuario==="cliente") nomeInput.value = nomeCliente;
+
+// ===================== DADOS DA TRANÇA =====================
+const braidData = JSON.parse(sessionStorage.getItem("braidData") || "{}");
+const trancaInput = document.getElementById("trancaEscolhida");
+if(Object.keys(braidData).length>0){
+  trancaInput.value = `${braidData.name} - ${braidData.comprimento ? 'R$ '+braidData.comprimento : ''}`;
+}
+
+// ===================== ELEMENTOS =====================
+const form = document.getElementById("form-agenda");
+const lista = document.getElementById("lista");
+const dataInput = document.getElementById("data");
+const horarioInput = document.getElementById("horario");
+const quadro = document.getElementById("quadro-horarios");
+
+const horariosPadrao = ["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00"];
+let horarioSelecionado = null;
+
+// ===================== DURAÇÃO DAS TRANÇAS =====================
+const duracoesHoras = {
+    "Box Braids":4.5, "Gypsy Braids":4.5, "Goddess Braids":4,
+    "Ghana Braids":2, "Faux Locs":4, "Trança Nagô":1,
+    "Fulani Braids":4, "Lemonade Braids":2, "French Curl":4,
+    "Slim Braids":4.5, "Boho Braids":4.5, "Flat Twist":2,
+    "Bantu Knots":2.5, "Twist Feminino":5, "Boxeadora":1.5,
+    "Mohswk Braids":5
+};
+
+// ===================== AJUSTAR HORÁRIOS =====================
+function addHoras(horaStr, horas) {
+  const [h,m] = horaStr.split(":").map(Number);
+  const total = new Date(0,0,0,h,m);
+  total.setHours(total.getHours() + Math.floor(horas));
+  total.setMinutes(total.getMinutes() + Math.round((horas % 1)*60));
+  return total.getHours().toString().padStart(2,"0")+":"+total.getMinutes().toString().padStart(2,"0");
+}
+
+// ===================== ATUALIZAR QUADRO =====================
+async function atualizarQuadro(){
+  if(tipoUsuario==="admin") return;
+  const dataEscolhida = dataInput.value;
+  if(!dataEscolhida){ quadro.innerHTML=""; return; }
+
+  const { data: agendamentos } = await client.from("agendamentos")
+    .select("*")
+    .gte("horario", dataEscolhida+"T00:00")
+    .lt("horario", dataEscolhida+"T23:59");
+
+  quadro.innerHTML="";
+
+  const ocupados = [];
+  agendamentos.forEach(a=>{
+    const dt = new Date(a.horario);
+    const h = dt.getHours().toString().padStart(2,"0")+":"+dt.getMinutes().toString().padStart(2,"0");
+    const dur = a.tempo_extra || duracoesHoras[a.tranca] || 1;
+    for(let i=0;i<Math.ceil(dur);i++){
+      ocupados.push(addHoras(h,i));
+    }
+  });
+
+  const durSelecionada = braidData.tempoExtra || duracoesHoras[braidData.name] || 1;
+
+  horariosPadrao.forEach(h=>{
+    const div = document.createElement("div");
+    div.textContent = h;
+    div.classList.add("horario");
+
+    let bloqueado=false;
+    for(let i=0;i<Math.ceil(durSelecionada);i++){
+      if(ocupados.includes(addHoras(h,i))){
+        bloqueado=true;
+        break;
+      }
+    }
+
+    if(bloqueado) div.classList.add("ocupado");
+    else div.addEventListener("click",()=>{
+      const prev = quadro.querySelector(".selecionado");
+      if(prev) prev.classList.remove("selecionado");
+      div.classList.add("selecionado");
+      horarioSelecionado=h;
+
+      const [ano,mes,dia]=dataEscolhida.split("-");
+      const [hora,min]=h.split(":");
+      const dtLocal = new Date(ano,mes-1,dia,hora,min,0);
+      horarioInput.value = dtLocal.toISOString().slice(0,19);
+    });
+
+    quadro.appendChild(div);
+  });
+}
+
+// ===================== EVENTOS =====================
+dataInput.addEventListener("change",()=>{
+  horarioSelecionado=null;
+  horarioInput.value="";
+  atualizarQuadro();
+});
+
+// ===================== ENVIO =====================
+form.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  if(!horarioSelecionado){ alert("Selecione um horário"); return; }
+
+  const [ano,mes,dia]=dataInput.value.split("-");
+  const [hora,min]=horarioSelecionado.split(":");
+  const dtLocal = new Date(ano,mes-1,dia,hora,min,0);
+
+  const { error } = await client.from("agendamentos").insert([{
+    nome_cliente: nomeCliente,
+    horario: dtLocal.toISOString().slice(0,19),
+    tranca: braidData.name || null,
+    comprimento: braidData.comprimento || null,
+    espessura: braidData.espessura || null,
+    cor: braidData.cor || null,
+    extras: braidData.extras ? JSON.stringify(braidData.extras) : null,
+    tempo_extra: braidData.tempoExtra || duracoesHoras[braidData.name] || 1,
+    status:"pendente"
+  }]);
+
+  if(error){ alert("Erro: "+error.message); return; }
+
+  alert("Agendamento criado com sucesso!");
+  const numeroDona = "5511999999999";
+  const diaStr = dtLocal.toLocaleDateString('pt-BR');
+  const horaStr = dtLocal.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',hour12:false});
+  const mensagem = `Olá! Sou ${nomeCliente} e agendei minha trança ${braidData.name} para ${diaStr} às ${horaStr}.`;
+  window.open(`https://wa.me/${numeroDona}?text=${encodeURIComponent(mensagem)}`,"_blank");
+
+  form.reset();
+  horarioSelecionado=null;
+  horarioInput.value="";
+  quadro.innerHTML="";
+  carregarAgendamentos();
+});
+
+// ===================== CARREGAR AGENDAMENTOS =====================
+async function carregarAgendamentos(){
+  const { data } = await client.from("agendamentos").select("*").order("horario",{ascending:true});
+  lista.innerHTML="";
+  if(data){
+    let lastDia="";
+    data.forEach(item=>{
+      if(tipoUsuario==="cliente" && item.nome_cliente.toLowerCase()!==nomeCliente.toLowerCase()) return;
+      const dt = new Date(item.horario);
+      const diaStr = dt.toLocaleDateString('pt-BR');
+      const horaStr = dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',hour12:false});
+      if(diaStr!==lastDia){
+        const diaLi=document.createElement("li");
+        diaLi.textContent=diaStr;
+        diaLi.classList.add("dia");
+        lista.appendChild(diaLi);
+        lastDia=diaStr;
+      }
+      const li = document.createElement("li");
+      li.classList.add("horario-item");
+      li.innerHTML=`<span>${item.nome_cliente}</span> - ${horaStr} - [${item.tranca || 'Sem trança'}]`;
+      lista.appendChild(li);
+    });
+  }
+}
+
+carregarAgendamentos();
+atualizarQuadro();
+</script>
+
+
+
+
+</body>
+</html>

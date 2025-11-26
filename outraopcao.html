@@ -1,0 +1,234 @@
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda Medusa Braids</title>
+<style>
+:root {
+  --purple:#7a39f7;
+  --bg:#f5f5f5;
+  --surface:#ffffff;
+  --muted:#666;
+  --radius:12px;
+  --gap:12px;
+}
+body {
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background: var(--bg);
+  color:#222;
+}
+.container {
+  max-width:900px;
+  margin:0 auto;
+  padding:20px;
+}
+h1,h2,h3 {margin:8px 0;}
+input, select, button {
+  padding:8px 12px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+button {
+  background: var(--purple);
+  color:white;
+  cursor:pointer;
+  border:none;
+}
+button:hover {opacity:0.9;}
+#loginPanel, #agendaPanel, #adminPanel {
+  background: var(--surface);
+  padding:20px;
+  border-radius: var(--radius);
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  margin-top:20px;
+}
+.hidden {display:none;}
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+table, th, td {border:1px solid #ccc;}
+th, td {padding:8px; text-align:left;}
+th {background: var(--purple); color:white;}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Agenda Medusa Braids</h1>
+
+  <!-- LOGIN -->
+  <div id="loginPanel">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email"><br><br>
+    <input type="password" id="password" placeholder="Senha"><br><br>
+    <button onclick="login()">Entrar</button>
+    <p id="loginMsg" style="color:red;"></p>
+  </div>
+
+  <!-- AGENDA CLIENTE -->
+  <div id="agendaPanel" class="hidden">
+    <h2>Agendamento de Tranças</h2>
+    <p>Trança selecionada: <span id="selectedBraid">—</span></p>
+    <label>Data: <input type="date" id="date"></label><br><br>
+    <label>Horário: 
+      <select id="time"></select>
+    </label><br><br>
+    <button onclick="bookAppointment()">Agendar</button>
+    <h3>Seus agendamentos</h3>
+    <ul id="myAppointments"></ul>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="adminPanel" class="hidden">
+    <h2>Painel Admin</h2>
+    <h3>Todos os agendamentos</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Trança</th>
+          <th>Data</th>
+          <th>Hora</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="appointmentsTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<script type="module">
+// ===========================
+// CONFIGURAÇÃO SUPABASE
+// ===========================
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const supabaseUrl = 'https://SEU-SUPABASE-URL';
+const supabaseKey = 'SUA-CHAVE-PUBLICA';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+let currentUser = null;
+let selectedBraid = new URLSearchParams(window.location.search).get('braid') || '—';
+document.getElementById('selectedBraid').innerText = selectedBraid;
+
+// ===========================
+// LOGIN
+// ===========================
+async function login(){
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  document.getElementById('loginMsg').innerText = '';
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if(error){ 
+    document.getElementById('loginMsg').innerText = error.message;
+    return;
+  }
+  currentUser = data.user;
+  const meta = data.user.user_metadata || {};
+  const role = meta.role || 'cliente';
+  if(role==='adm') {
+    document.getElementById('loginPanel').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    loadAllAppointments();
+  } else {
+    document.getElementById('loginPanel').classList.add('hidden');
+    document.getElementById('agendaPanel').classList.remove('hidden');
+    loadAvailableTimes();
+    loadMyAppointments();
+  }
+}
+
+// ===========================
+// CLIENTE
+// ===========================
+async function loadAvailableTimes(){
+  const date = document.getElementById('date').value || new Date().toISOString().slice(0,10);
+  const { data } = await supabase.from('schedule')
+    .select('*')
+    .eq('date', date)
+    .eq('braid_type', selectedBraid)
+    .eq('available', true);
+  const select = document.getElementById('time');
+  select.innerHTML = '';
+  data.forEach(d=>{
+    const opt = document.createElement('option');
+    opt.value = d.time;
+    opt.textContent = d.time;
+    select.appendChild(opt);
+  });
+}
+document.getElementById('date').addEventListener('change', loadAvailableTimes);
+
+async function bookAppointment(){
+  const date = document.getElementById('date').value;
+  const time = document.getElementById('time').value;
+  if(!date || !time){ alert('Selecione data e horário'); return; }
+
+  await supabase.from('appointments').insert({
+    user_id: currentUser.id,
+    braid_type: selectedBraid,
+    date, time,
+    status:'agendado'
+  });
+  await supabase.from('schedule').update({ available:false })
+    .eq('date', date).eq('time', time).eq('braid_type', selectedBraid);
+  alert('Agendamento confirmado!');
+  loadAvailableTimes();
+  loadMyAppointments();
+}
+
+async function loadMyAppointments(){
+  const { data } = await supabase.from('appointments')
+    .select('*')
+    .eq('user_id', currentUser.id);
+  const ul = document.getElementById('myAppointments');
+  ul.innerHTML = '';
+  data.forEach(a=>{
+    const li = document.createElement('li');
+    li.textContent = `${a.braid_type} — ${a.date} ${a.time}`;
+    ul.appendChild(li);
+  });
+}
+
+// ===========================
+// ADMIN
+// ===========================
+async function loadAllAppointments(){
+  const { data } = await supabase.from('appointments')
+    .select('*, users(id, email, user_metadata)')
+    .order('date', { ascending:true });
+  const tbody = document.getElementById('appointmentsTable');
+  tbody.innerHTML = '';
+  data.forEach(a=>{
+    const tr = document.createElement('tr');
+    const userName = a.users.user_metadata?.name || a.users.email;
+    tr.innerHTML = `
+      <td>${userName}</td>
+      <td>${a.braid_type}</td>
+      <td>${a.date}</td>
+      <td>${a.time}</td>
+      <td>
+        <button onclick="deleteAppointment(${a.id})">Excluir</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function deleteAppointment(id){
+  if(confirm('Deseja realmente excluir?')){
+    await supabase.from('appointments').delete().eq('id', id);
+    loadAllAppointments();
+  }
+}
+</script>
+</body>
+</html>
