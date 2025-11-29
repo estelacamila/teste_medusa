@@ -286,6 +286,32 @@ function finalizeWhatsApp() {
   window.open(`https://wa.me/${waNumber}?text=${encoded}`, "_blank");
 }
 
+
+// ===============================
+// AGENDAR AGORA (WHATSAPP)
+// ===============================
+function agendarAgora() {
+  if (cart.length === 0) {
+    alert("Escolha pelo menos uma trança!");
+    return;
+  }
+
+  // Salva a última trança escolhida
+  const lastItem = cart[cart.length - 1];
+
+  const braidData = {
+    name: lastItem.name,
+    
+  };
+
+  sessionStorage.setItem("braidData", JSON.stringify(braidData));
+
+  // Redireciona para a agenda
+  window.location.href = "login.html";
+}
+
+
+
 // ===============================
 // FUNÇÕES ÚTEIS
 // ===============================
