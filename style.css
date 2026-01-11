@@ -93,11 +93,23 @@ body{
 ========================= */
 
 .brand-logo {
-  width: 95px;
-  height: 95px;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
   border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--accent);
+  background: #1a1622;
+  padding: 6px;
+}
+
+.brand-text h1 {
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+
+.brand-text p {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
 }
 
 
@@ -113,10 +125,10 @@ header{
   margin-bottom:18px;
 }
 
-.brand{
-  display:flex;
-  gap:12px;
-  align-items:center;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 #cart-icon{
@@ -399,6 +411,41 @@ select, input[type="text"]{
 /* =========================
    MOBILE
 ========================= */
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+  }
+
+  .brand {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .brand-logo {
+    width: 88px;
+    height: 88px;
+    padding: 8px;
+  }
+
+  .brand-text h1 {
+    font-size: 1.4rem;
+  }
+
+  .brand-text p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .header-actions {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+}
+
 
 @media (max-width:720px){
   #cart-panel{
