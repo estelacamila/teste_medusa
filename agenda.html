@@ -219,12 +219,16 @@ li{
 // ===================== SESSÃO =====================
 const tipoUsuario = sessionStorage.getItem("tipoUsuario");
 const nomeCliente = sessionStorage.getItem("nomeCliente") || "";
-if(!tipoUsuario) location.href = "login.html";
+
+if (!tipoUsuario) {
+  location.href = "login.html";
+}
 
 document.getElementById("nome").value = nomeCliente;
 
-// ===================== TRANÇA =====================
+// ===================== DADOS DA TRANÇA =====================
 const braidData = JSON.parse(sessionStorage.getItem("braidData") || "{}");
+
 document.getElementById("trancaEscolhida").value = braidData.name || "";
 
 // ===================== ELEMENTOS =====================
@@ -235,24 +239,31 @@ const horarioInput = document.getElementById("horario");
 const quadro = document.getElementById("quadro-horarios");
 
 // ===================== HORÁRIOS =====================
-const horarios = ["08:00","09:00","10:00","11:00","11:30","14:30","15:00","16:00","17:00","18:00"];
+const horarios = [
+  "08:00","09:00","10:00","11:00","11:30",
+  "14:30","15:00","16:00","17:00","18:00"
+];
+
 let horarioSelecionado = null;
 
 function atualizarQuadro(){
   quadro.innerHTML = "";
   horarioSelecionado = null;
 
-  horarios.forEach(h=>{
+  horarios.forEach(h => {
     const div = document.createElement("div");
     div.className = "horario";
     div.textContent = h;
 
-    div.onclick = ()=>{
-      document.querySelectorAll(".horario").forEach(el=>el.classList.remove("selecionado"));
+    div.onclick = () => {
+      document
+        .querySelectorAll(".horario")
+        .forEach(el => el.classList.remove("selecionado"));
+
       div.classList.add("selecionado");
       horarioSelecionado = h;
 
-      const [hh,mm] = h.split(":");
+      const [hh, mm] = h.split(":");
       horarioInput.value = `${dataInput.value}T${hh}:${mm}`;
     };
 
@@ -261,6 +272,15 @@ function atualizarQuadro(){
 }
 
 dataInput.addEventListener("change", atualizarQuadro);
+
+// ===================== HELPERS =====================
+function textoComprimento(valor){
+  return valor || "Não informado";
+}
+
+function textoEspessura(valor){
+  return valor || "Normal";
+}
 
 // ===================== STORAGE =====================
 function getAgendamentos(){
@@ -272,39 +292,89 @@ function saveAgendamentos(arr){
 }
 
 // ===================== SUBMIT =====================
-form.onsubmit = e=>{
+form.onsubmit = e => {
   e.preventDefault();
-  if(!horarioSelecionado) return alert("Selecione um horário");
+
+  if (!horarioSelecionado) {
+    alert("Selecione um horário");
+    return;
+  }
 
   const agendamentos = getAgendamentos();
+
   agendamentos.push({
-    nome_cliente:nomeCliente,
-    horario:horarioInput.value,
-    tranca:braidData.name || ""
+    nome_cliente: nomeCliente,
+    horario: horarioInput.value,
+    tranca: braidData.name || "Não informada",
+    comprimento: textoComprimento(braidData.comprimento),
+    espessura: textoEspessura(braidData.espessura),
+    cor: braidData.cor || "Não informada",
+    extras: braidData.extras || [],
+    total: braidData.price || 0
   });
 
   saveAgendamentos(agendamentos);
   carregarAgendamentos();
 
+  // ===================== WHATSAPP =====================
   const dt = new Date(horarioInput.value);
-  const msg = `Olá! Sou ${nomeCliente} e gostaria de agendar ${braidData.name} para ${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}.`;
-  window.open(`https://wa.me/5517991496548?text=${encodeURIComponent(msg)}`);
+
+  const extrasTexto =
+    Array.isArray(braidData.extras) && braidData.extras.length
+      ? braidData.extras.join(", ")
+      : "Nenhum";
+
+  const msg =
+`✨ *NOVO AGENDAMENTO* ✨
+
+👤 Cliente: ${nomeCliente}
+
+💇‍♀️ Trança: ${braidData.name || "Não informada"}
+📏 Comprimento: ${textoComprimento(braidData.comprimento)}
+🧵 Espessura: ${textoEspessura(braidData.espessura)}
+🎨 Cor: ${braidData.cor || "Não informada"}
+➕ Extras: ${extrasTexto}
+
+📅 Data: ${dt.toLocaleDateString("pt-BR")}
+🕒 Horário: ${dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
+💰 Valor: R$ ${Number(braidData.price || 0).toFixed(2).replace(".", ",")}
+`;
+
+  window.open(
+    `https://wa.me/5517991496548?text=${encodeURIComponent(msg)}`,
+    "_blank"
+  );
 };
 
 // ===================== LISTAR =====================
 function carregarAgendamentos(){
   lista.innerHTML = "";
-  getAgendamentos().forEach(a=>{
-    if(tipoUsuario==="cliente" && a.nome_cliente!==nomeCliente) return;
+
+  getAgendamentos().forEach(a => {
+    if (tipoUsuario === "cliente" && a.nome_cliente !== nomeCliente) return;
+
     const dt = new Date(a.horario);
     const li = document.createElement("li");
-    li.textContent = `${dt.toLocaleDateString("pt-BR")} - ${dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})} - ${a.tranca}`;
+
+    li.innerHTML = `
+      <strong>${dt.toLocaleDateString("pt-BR")}</strong> —
+      ${dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}<br>
+      ${a.tranca}<br>
+      Comprimento: ${a.comprimento}<br>
+      Cor: ${a.cor} |
+      Espessura: ${a.espessura} |
+      Extras: ${(a.extras && a.extras.length) ? a.extras.join(", ") : "Nenhum"}
+    `;
+
     lista.appendChild(li);
   });
 }
 
 carregarAgendamentos();
 </script>
+
+
+
 
 </body>
 </html>

@@ -1,336 +1,224 @@
 // ===============================
-// ESTADO
+// ESTADO GLOBAL
 // ===============================
-let currentProductName = "";
-let currentCard = null;
+let currentProduct = null;
 const cart = [];
 
 // ===============================
-// CONFIGURAÇÃO DE EXTRAS
+// CONFIGURAÇÃO DAS TRANÇAS
 // ===============================
-const trancasExtras = {
-  "Ghana Braids": { detalhes: ["Cachos Orgânicos"], precoExtra: { "Cachos Orgânicos": 50 } },
-  "Goddess Braids": { detalhes: ["Cachos Orgânicos", "Cachos Sintéticos"], precoExtra: { "Cachos Orgânicos": 60, "Cachos Sintéticos": 0 } },
-  "Trança Nagô": { detalhes: ["Trança Desenhada", "Jumbo"], precoExtra: { "Trança Desenhada": 40, "Jumbo": 30 }, tempoExtra: { "Jumbo": 1 } },
-  "Fulani Braids": { detalhes: ["Trança Desenhada", "Cachos Orgânicos"], precoExtra: { "Trança Desenhada": 50, "Cachos Orgânicos": 60 } },
-  "Lemonade Braids": { detalhes: ["Cachos Orgânicos"], precoExtra: { "Cachos Orgânicos": 60 } },
-  "Flat Twist": { detalhes: ["Jumbo"], precoExtra: { "Jumbo": 50 } },
-  "Boxeadora": { detalhes: ["Trança Desenhada"], precoExtra: { "Trança Desenhada": 20 } }
+const trancasConfig = {
+  "Box Braids": { duracao: "4h30", permiteEspessura: true, extras: [] },
+  "Gypsy Braids": { duracao: "4h30", permiteEspessura: true, extras: [] },
+  "Goddess Braids": {
+    duracao: "4h",
+    permiteEspessura: true,
+    extras: ["Cachos Orgânicos", "Cachos Sintéticos"],
+    precosExtras: { "Cachos Orgânicos": 60, "Cachos Sintéticos": 0 }
+  },
+  "Ghana Braids": {
+    duracao: "2h",
+    permiteEspessura: false,
+    extras: ["Cachos Orgânicos"],
+    precosExtras: { "Cachos Orgânicos": 50 }
+  },
+  "Faux Locs": { duracao: "4h", permiteEspessura: false, extras: [] },
+  "Trança Nagô": {
+    duracao: "1h",
+    permiteEspessura: false,
+    extras: ["Trança Desenhada", "Jumbo"],
+    precosExtras: { "Trança Desenhada": 40, "Jumbo": 30 }
+  },
+  "Fulani Braids": {
+    duracao: "4h",
+    permiteEspessura: false,
+    extras: ["Trança Desenhada", "Cachos Orgânicos"],
+    precosExtras: { "Trança Desenhada": 50, "Cachos Orgânicos": 60 }
+  },
+  "Lemonade Braids": {
+    duracao: "2h",
+    permiteEspessura: false,
+    extras: ["Cachos Orgânicos"],
+    precosExtras: { "Cachos Orgânicos": 60 }
+  },
+  "French Curl": { duracao: "4h", permiteEspessura: true, extras: [] },
+  "Slim Braids": { duracao: "4h30", permiteEspessura: false, extras: [] },
+  "Boho Braids": { duracao: "4h30", permiteEspessura: true, extras: [] },
+  "Flat Twist": {
+    duracao: "2h",
+    permiteEspessura: false,
+    extras: ["Jumbo"],
+    precosExtras: { "Jumbo": 50 }
+  },
+  "Bantu Knots": { duracao: "2h30", permiteEspessura: false, extras: [] },
+  "Twist Feminino": { duracao: "5h", permiteEspessura: false, extras: [] },
+  "Boxeadora": {
+    duracao: "1h30",
+    permiteEspessura: false,
+    extras: ["Trança Desenhada"],
+    precosExtras: { "Trança Desenhada": 20 }
+  },
+  "Mohswk Braids": { duracao: "5h", permiteEspessura: false, extras: [] }
 };
 
 // ===============================
-// ABRIR MODAL DE OPÇÕES
+// ABRIR MODAL
 // ===============================
-
-function goToAgenda() {
-  if (cart.length === 0) {
-    alert("Escolha pelo menos uma trança!");
-    return;
-  }
-
-  // Aqui você pode pegar a última trança adicionada ao carrinho
-  const lastItem = cart[cart.length - 1];
-
-  const braidData = {
-    name: lastItem.name,
-    comprimento: lastItem.comprimento,
-    espessura: lastItem.espessura,
-    cor: lastItem.cor,
-    extras: lastItem.extras,
-    price: lastItem.price,
-    tempoExtra: lastItem.tempoExtra
-  };
-
-  // Salva no sessionStorage
-  sessionStorage.setItem("braidData", JSON.stringify(braidData));
-
-  // Redireciona para a página da agenda
-  window.location.href = "login.html"; // nome do arquivo da agenda
-}
-
 function openOptions(btn) {
   const card = btn.closest(".card");
-  if (!card) return;
+  const name = card.dataset.name;
 
-  currentCard = card;
-  const produto = card.dataset.name;
-  currentProductName = produto;
-
-  document.getElementById("selectedProduct").innerText = "Produto: " + produto;
-
-  // Durações personalizadas por trança
-  const duracoes = {
-    "Box Braids": "4h30",
-    "Gypsy Braids": "2h",
-    "Goddess Braids": "4h",
-    "Ghana Braids": "3h ",
-    "Faux Locs": "5h ",
-    "Trança Nagô": "2h ",
-    "Fulani Braids": "3h ",
-    "Lemonade Braids": "4h",
-    "French Curl": "4h ",
-    "Slim Braids": "6h ",
-    "Boho Braids": "4h ",
-    "Flat Twist": "2h ",
-    "Bantu Knots": "1h ",
-    "Twist Feminino": "4h ",
-    "Boxeadora": "2h",
-    "Mohswk Braids": "4h"
-  };
-  document.getElementById("duracaoValue").innerText = duracoes[produto] || "—";
-
-  // Preencher select de comprimento
-  const comprimentoSelect = document.getElementById("opComprimento");
-  comprimentoSelect.innerHTML = "";
-  const prices = [
-    { label: "Curto", value: card.dataset.priceShort },
-    { label: "Médio", value: card.dataset.priceMedium },
-    { label: "Longo", value: card.dataset.priceLong }
-  ];
-  prices.forEach(p => {
-    if (p.value) {
-      const opt = document.createElement("option");
-      opt.value = Number(p.value);
-      opt.text = `${p.label} — R$ ${numberToBRL(p.value)}`;
-      comprimentoSelect.appendChild(opt);
+  currentProduct = {
+    name,
+    basePrices: {
+      curto: Number(card.dataset.priceShort),
+      medio: Number(card.dataset.priceMedium),
+      longo: Number(card.dataset.priceLong)
     }
-  });
+  };
 
-  // Resetar espessura, cor e extras
-  document.getElementById("opEspessura").value = "0";
+  document.getElementById("selectedProduct").innerText = "Produto: " + name;
+  document.getElementById("duracaoValue").innerText =
+    trancasConfig[name]?.duracao || "—";
+
+  montarComprimento();
+  montarEspessura();
+  montarExtras();
+
   document.getElementById("opCor").value = "";
-  const extrasContainer = document.getElementById("extrasContainer");
-  extrasContainer.innerHTML = "";
+  updateTotal();
 
-  // Mostrar extras se houver
-  if (trancasExtras[produto]) {
-    trancasExtras[produto].detalhes.forEach(det => {
-      const div = document.createElement("div");
-      div.className = "form-row";
-      div.innerHTML = `<label style="min-width:150px"><input type="checkbox" class="extraOption" data-name="${det}"> ${det}</label>`;
-      extrasContainer.appendChild(div);
-    });
-
-    document.querySelectorAll(".extraOption").forEach(cb => {
-      cb.addEventListener("change", updateModalTotal);
-    });
-  }
-
-  updateModalTotal();
-
-  const panel = document.getElementById("optionsPanel");
-  panel.style.display = "flex";
-  panel.setAttribute("aria-hidden", "false");
+  document.getElementById("optionsPanel").style.display = "flex";
 }
 
 // ===============================
 // FECHAR MODAL
 // ===============================
 function closeOptions() {
-  const panel = document.getElementById("optionsPanel");
-  panel.style.display = "none";
-  panel.setAttribute("aria-hidden", "true");
+  document.getElementById("optionsPanel").style.display = "none";
 }
 
 // ===============================
-// CALCULAR EXTRAS E TEMPO
+// MONTAR COMPRIMENTO
 // ===============================
-function calcularExtras(produto) {
-  let precoExtra = 0;
-  let tempoExtra = 0;
+function montarComprimento() {
+  const select = document.getElementById("opComprimento");
+  select.innerHTML = "";
 
-  // Fina adiciona 1h
-  const fina = Number(document.getElementById("opEspessura").value || 0) === 50;
-  if (fina) tempoExtra += 1;
-
-  document.querySelectorAll(".extraOption:checked").forEach(cb => {
-    const det = cb.dataset.name;
-    const info = trancasExtras[produto];
-    if (info && info.precoExtra[det]) precoExtra += info.precoExtra[det];
-    if (info && info.tempoExtra && info.tempoExtra[det]) tempoExtra += info.tempoExtra[det];
+  [
+    { tipo: "Curto", key: "curto" },
+    { tipo: "Médio", key: "medio" },
+    { tipo: "Longo", key: "longo" }
+  ].forEach(item => {
+    const valor = currentProduct.basePrices[item.key];
+    if (valor) {
+      const opt = document.createElement("option");
+      opt.value = item.tipo;
+      opt.dataset.preco = valor;
+      opt.textContent = `${item.tipo} — R$ ${valor}`;
+      select.appendChild(opt);
+    }
   });
 
-  return { precoExtra, tempoExtra };
+  // 🔥 Atualiza valor ao trocar comprimento
+  select.onchange = updateTotal;
 }
 
 // ===============================
-// ATUALIZAR TOTAL MODAL
+// ESPESSURA
 // ===============================
-function updateModalTotal() {
-  const comp = Number(document.getElementById("opComprimento").value || 0);
-  const esp = Number(document.getElementById("opEspessura").value || 0);
+function montarEspessura() {
+  const select = document.getElementById("opEspessura");
+  const permite = trancasConfig[currentProduct.name]?.permiteEspessura;
 
-  let total = comp + esp;
+  select.innerHTML = "";
 
-  if (currentProductName) {
-    const extras = calcularExtras(currentProductName);
-    total += extras.precoExtra;
+  if (!permite) {
+    select.style.display = "none";
+    return;
   }
 
-  document.getElementById("opTotal").innerText = numberToBRL(total);
+  select.style.display = "block";
+  select.innerHTML = `
+    <option value="0">Normal</option>
+    <option value="50">Fina (+R$50)</option>
+  `;
+
+  select.onchange = updateTotal;
 }
 
 // ===============================
-// EVENTOS PARA ATUALIZAR TOTAL
+// EXTRAS
 // ===============================
-document.getElementById("opComprimento").addEventListener("change", updateModalTotal);
-document.getElementById("opEspessura").addEventListener("change", updateModalTotal);
-document.getElementById("opCor").addEventListener("input", updateModalTotal);
+function montarExtras() {
+  const container = document.getElementById("extrasContainer");
+  container.innerHTML = "";
+
+  const extras = trancasConfig[currentProduct.name]?.extras || [];
+
+  extras.forEach(extra => {
+    const label = document.createElement("label");
+    label.innerHTML = `
+      <input type="checkbox" value="${extra}"> ${extra}
+    `;
+    container.appendChild(label);
+  });
+
+  container.querySelectorAll("input").forEach(cb =>
+    cb.addEventListener("change", updateTotal)
+  );
+}
 
 // ===============================
-// ADICIONAR AO CARRINHO
+// CALCULAR TOTAL
+// ===============================
+function updateTotal() {
+  const select = document.getElementById("opComprimento");
+  if (!select || select.selectedIndex < 0) return;
+
+  let total = Number(
+    select.options[select.selectedIndex].dataset.preco || 0
+  );
+
+  total += Number(document.getElementById("opEspessura")?.value || 0);
+
+  const config = trancasConfig[currentProduct.name];
+
+  document
+    .querySelectorAll("#extrasContainer input:checked")
+    .forEach(cb => {
+      total += config?.precosExtras?.[cb.value] || 0;
+    });
+
+  document.getElementById("opTotal").innerText =
+    total.toFixed(2).replace(".", ",");
+}
+
+// ===============================
+// ADICIONAR AO CARRINHO / AGENDA
 // ===============================
 function addToCartFromModal() {
-  const comp = Number(document.getElementById("opComprimento").value || 0);
-  const esp = Number(document.getElementById("opEspessura").value || 0);
-  const corNome = (document.getElementById("opCor").value || "").trim();
-
-  let preco = comp + esp;
-  let tempoExtra = 0;
-
-  if (currentProductName) {
-    const extras = calcularExtras(currentProductName);
-    preco += extras.precoExtra;
-    tempoExtra += extras.tempoExtra;
-  }
-
-  const extrasSelecionados = Array.from(document.querySelectorAll(".extraOption:checked")).map(cb => cb.dataset.name);
+  const select = document.getElementById("opComprimento");
 
   const item = {
-    name: currentProductName,
-    comprimento: comp,
-    espessura: esp,
-    cor: corNome || "Não informada",
-    extras: extrasSelecionados,
-    price: preco,
-    tempoExtra
+    name: currentProduct.name,
+    comprimento: select.value,
+    precoComprimento: Number(
+      select.options[select.selectedIndex].dataset.preco
+    ),
+    cor: document.getElementById("opCor").value || null,
+    espessura:
+      trancasConfig[currentProduct.name].permiteEspessura
+        ? document.getElementById("opEspessura").value == 50
+          ? "Fina"
+          : "Normal"
+        : null,
+    extras: Array.from(
+      document.querySelectorAll("#extrasContainer input:checked")
+    ).map(cb => cb.value),
+    price: Number(document.getElementById("opTotal").innerText.replace(",", "."))
   };
 
-  cart.push(item);
-  renderCart();
-  closeOptions();
-  flashCartCount();
+  sessionStorage.setItem("braidData", JSON.stringify(item));
+  window.location.href = "agenda.html";
 }
-
-// ===============================
-// RENDERIZAR CARRINHO
-// ===============================
-function renderCart() {
-  const list = document.getElementById("cartItems");
-  list.innerHTML = "";
-
-  if (cart.length === 0) {
-    list.innerHTML = '<div class="small-muted">Seu carrinho está vazio.</div>';
-  } else {
-    cart.forEach((it, idx) => {
-      const div = document.createElement("div");
-      div.className = "cart-item";
-      div.innerHTML = `
-        <p><strong>${escapeHtml(it.name)}</strong></p>
-        <p class="small-muted">
-          Comprimento: R$ ${numberToBRL(it.comprimento)}<br>
-          Espessura: ${it.espessura === 0 ? "Normal" : "+ R$ " + numberToBRL(it.espessura)}<br>
-          Cor: ${escapeHtml(it.cor)}<br>
-          Extras: ${it.extras.length ? it.extras.join(", ") : "-"}<br>
-          Tempo extra: ${it.tempoExtra ? it.tempoExtra + "h" : "-"}
-        </p>
-        <p><strong>R$ ${numberToBRL(it.price)}</strong></p>
-        <button class="btn-ghost" style="padding:6px;border-radius:8px;font-size:12px" onclick="removeItem(${idx})">Remover</button>
-      `;
-      list.appendChild(div);
-    });
-  }
-
-  document.getElementById("cart-count").innerText = cart.length;
-  const total = cart.reduce((sum, prd) => sum + prd.price, 0);
-  document.getElementById("cartTotal").innerText = numberToBRL(total);
-}
-
-// ===============================
-// REMOVER ITEM
-// ===============================
-function removeItem(index) {
-  if (index >= 0 && index < cart.length) {
-    cart.splice(index, 1);
-    renderCart();
-  }
-}
-
-// ===============================
-// ABRIR / FECHAR CARRINHO
-// ===============================
-function toggleCart() {
-  const panel = document.getElementById("cart-panel");
-  panel.classList.toggle("open");
-}
-
-// ===============================
-// FINALIZAR WHATSAPP
-// ===============================
-function finalizeWhatsApp() {
-  if (cart.length === 0) {
-    alert("Seu carrinho está vazio.");
-    return;
-  }
-
-  const lines = cart.map((it, i) => {
-    return `${i + 1}) ${it.name} — Comprimento: R$ ${numberToBRL(it.comprimento)}, Espessura: ${it.espessura === 0 ? "Normal" : "+ R$ " + numberToBRL(it.espessura)}, Cor: ${it.cor}, Extras: ${it.extras.join(", ") || "-"} — Total: R$ ${numberToBRL(it.price)} — Tempo extra: ${it.tempoExtra ? it.tempoExtra + "h" : "-"}`;
-  });
-
-  const total = numberToBRL(cart.reduce((sum, i) => sum + i.price, 0));
-
-  const message = `Olá! Gostaria de fazer o pedido:\n\n${lines.join("\n")}\n\nTotal: R$ ${total}\n\nNome:\nTelefone:\nData/Hora desejada:`;
-
-  const encoded = encodeURIComponent(message);
-  const waNumber = "55DDDNÚMERODOSEUWHATSAPP";
-  window.open(`https://wa.me/${waNumber}?text=${encoded}`, "_blank");
-}
-
-
-// ===============================
-// AGENDAR AGORA (WHATSAPP)
-// ===============================
-function agendarAgora() {
-  if (cart.length === 0) {
-    alert("Escolha pelo menos uma trança!");
-    return;
-  }
-
-  // Salva a última trança escolhida
-  const lastItem = cart[cart.length - 1];
-
-  const braidData = {
-    name: lastItem.name,
-    
-  };
-
-  sessionStorage.setItem("braidData", JSON.stringify(braidData));
-
-  // Redireciona para a agenda
-  window.location.href = "login.html";
-}
-
-
-
-// ===============================
-// FUNÇÕES ÚTEIS
-// ===============================
-function numberToBRL(num) {
-  return Number(num).toFixed(2).replace(".", ",");
-}
-
-function escapeHtml(text) {
-  return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
-}
-
-function flashCartCount() {
-  const el = document.getElementById("cart-count");
-  el.style.transform = "scale(1.2)";
-  setTimeout(() => (el.style.transform = "scale(1)"), 150);
-}
-
-// ===============================
-// INICIALIZAÇÃO
-// ===============================
-renderCart();
-updateModalTotal();
