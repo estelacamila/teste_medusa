@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agenda Digital</title>
-  <style>/* ===================== VARIÁVEIS ===================== */
+  <style>
+ /* ===================== VARIÁVEIS ===================== */
 :root{
   --bg:#08060a;
   --surface:#121018;
@@ -71,9 +72,9 @@ label{
   margin-bottom:6px;
 }
 
+/* INPUTS PADRÃO */
 input, select{
   width:100%;
-  max-width:100%;
   padding:16px;
   font-size:1rem;
   border-radius: var(--radius);
@@ -83,6 +84,24 @@ input, select{
   box-sizing:border-box;
 }
 
+/* 🔥 CORREÇÃO DEFINITIVA DO INPUT DATE */
+input[type="date"]{
+  appearance:none;
+  -webkit-appearance:none;
+  height:56px;
+  text-align:left;
+}
+
+/* força alinhamento do texto no Android */
+input[type="date"]::-webkit-date-and-time-value{
+  text-align:left;
+}
+
+/* ícone do calendário mais discreto */
+input[type="date"]::-webkit-calendar-picker-indicator{
+  filter: invert(1);
+  opacity: 0.7;
+}
 
 input:focus, select:focus{
   outline:none;
@@ -165,7 +184,6 @@ li{
 
 /* ===================== 📱 MOBILE ===================== */
 @media (max-width: 480px){
-
   .container{
     padding:32px 20px;
   }
@@ -175,14 +193,10 @@ li{
   }
 
   input, button{
-    padding:16px;
     font-size:1rem;
   }
-
-  #quadro-horarios{
-    gap:12px;
-  }
 }
+
 </style>
 
 </head>
