@@ -2,8 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Agenda Digital </title>
-<script src="https://unpkg.com/@supabase/supabase-js"></script>
+<title>Agenda Digital</title>
 <style>
 /* ===================== VARIÁVEIS ===================== */
 :root{
@@ -50,13 +49,6 @@ h1{
   gap:12px;
   font-size:2rem;
   color: var(--accent-2);
-}
-h1 img{
-  width:95px;
-  height:95px;
-  border-radius:50%;
-  object-fit:cover;
-  border:3px solid var(--accent);
 }
 
 /* ===================== FORMULÁRIO ===================== */
@@ -126,13 +118,6 @@ button:hover{
   transition:0.2s;
 }
 
-.horario.ocupado{
-  background:#4b004b;
-  border-color:#ff33cc;
-  cursor:not-allowed;
-  color:#999;
-}
-
 .horario.selecionado{
   background: var(--accent);
   color:#fff;
@@ -151,16 +136,6 @@ ul{
   list-style:none;
   padding:0;
   margin:0;
-}
-
-.dia{
-  background:#33004d;
-  color: #fff;
-  font-weight:bold;
-  padding:8px 12px;
-  border-radius: var(--radius);
-  margin-top:20px;
-  font-size:1.1rem;
 }
 
 .horario-item{
@@ -186,63 +161,16 @@ ul{
   flex-grow:1;
 }
 
-/* ===================== RESPONSIVIDADE (CORRIGIDA) ===================== */
+/* ===================== RESPONSIVIDADE ===================== */
 @media (max-width: 480px) {
-
-  body {
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-  }
-
-  /* 🔥 Removido o .card daqui (era ele que duplicava a grade!) */
-  .container,
-  .agenda-box {
-    width: 92% !important;
-    max-width: 360px;
-    margin: 20px auto !important;
-    transform: none !important;
-    left: 0 !important;
-  }
-
-  h1 {
-    font-size: 1.6rem !important;
-  }
-
-  h1 img {
-    width: 70px;
-    height: 70px;
-  }
-
-  input, select, button {
-    font-size: 1rem !important;
-    padding: 10px !important;
-  }
-
-  /* Horário 100% no mobile */
-  .horario {
-    flex: 1 0 100%;
-    font-size: 0.95rem;
-  }
-
-  .horario-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .horario-item button {
-    align-self: flex-end;
-  }
+  .horario { flex: 1 0 100%; font-size:0.95rem; }
 }
-
-
 </style>
 </head>
 <body>
+
 <div class="container">
-<h1> Agenda Digital</h1>
+<h1>Agenda Digital</h1>
 
 <form id="form-agenda">
   <label>Nome do Cliente</label>
@@ -264,12 +192,6 @@ ul{
 </div>
 
 <script>
-// ===================== CONFIGURAÇÃO SUPABASE =====================
-const SUPABASE_URL = "https://zlifgtznogdejoibzmpu.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpsaWZndHpub2dkZWpvaWJ6bXB1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTM1NDIxOCwiZXhwIjoyMDc0OTMwMjE4fQ.jl6K3Hr0U0KGN7TvvUBy6ssJj8EvqGk1kw0Lq08-eDU";
-const { createClient } = supabase;
-const client = createClient(SUPABASE_URL, SUPABASE_KEY);
-
 // ===================== LOGIN / SESSÃO =====================
 const tipoUsuario = sessionStorage.getItem("tipoUsuario");
 const nomeCliente = sessionStorage.getItem("nomeCliente") || "";
@@ -293,32 +215,10 @@ const horarioInput = document.getElementById("horario");
 const quadro = document.getElementById("quadro-horarios");
 
 // ===================== HORÁRIOS =====================
-const horariosPadrao = [
-  "09:00","10:00","11:00","12:00",
-  "13:00","14:00","15:00","16:00","17:00"
-];
-
+const horariosPadrao = ["08:00","09:00","10:00","11:00","11:30","14:30","15:00","16:00","17:00","18:00"];
 let horarioSelecionado = null;
 
-// util: converte "HH:MM" -> minutos desde 00:00
-function timeToMinutes(hhmm){
-  const [h,m] = hhmm.split(":").map(Number);
-  return h*60 + (m || 0);
-}
-
-// util: minutos -> "HH:MM"
-function minutesToTime(mins){
-  const h = String(Math.floor(mins/60)).padStart(2,"0");
-  const m = String(mins%60).padStart(2,"0");
-  return `${h}:${m}`;
-}
-
-const padraoMins = horariosPadrao.map(timeToMinutes);
-
-// ===================== DURAÇÕES (FRONT-END) =====================
-// Essas durações são a base + extras calculadas localmente.
-// Quando salvamos no Supabase, gravamos o tempo_total (base+extras),
-// e ao ler usamos esse campo diretamente.
+// ===================== DURAÇÃO EM MINUTOS =====================
 const duracoesHoras = {
   "Box Braids":4.5, "Gypsy Braids":4.5, "Goddess Braids":4,
   "Ghana Braids":2, "Faux Locs":4, "Trança Nagô":1,
@@ -328,157 +228,90 @@ const duracoesHoras = {
   "Mohswk Braids":5
 };
 
-function getDuracaoSelecionadaHoras(){
-  // calcula duração total que será salva no banco (base + extras)
-  const base = duracoesHoras[braidData.name] || 1;
+function getDuracaoSelecionadaMinutos(){
+  let base = duracoesHoras[braidData.name] || 60;
   let extra = 0;
-  if(braidData.espessura && braidData.espessura.toLowerCase().includes("fina")){
-    extra += 1;
-  }
-  if(braidData.tempoExtra){
-    extra += Number(braidData.tempoExtra) || 0;
-  }
-  return base + extra;
+  if(braidData.espessura && braidData.espessura.toLowerCase().includes("fina")) extra += 60;
+  if(braidData.tempoExtra) extra += Number(braidData.tempoExtra)*60 || 0;
+  return Math.round(base*60 + extra);
+}
+
+// ===================== FUNÇÕES DE AGENDA LOCAL =====================
+function getAgendamentos() {
+  return JSON.parse(sessionStorage.getItem("agendamentos") || "[]");
+}
+function saveAgendamentos(arr) {
+  sessionStorage.setItem("agendamentos", JSON.stringify(arr));
 }
 
 // ===================== ATUALIZAR QUADRO =====================
-// Busca por agendamentos NO DIA selecionado, marca horários ocupados
-async function atualizarQuadro(){
+function atualizarQuadro(){
   quadro.innerHTML = "";
   horarioSelecionado = null;
   horarioInput.value = "";
 
-  if(!dataInput.value) return;
-  if(tipoUsuario === "admin") return; // admin não precisa ver quadro
-
-  // Buscar agendamentos do dia (filtrando por timestamp entre 00:00 e 23:59)
-  const { data: agendamentos, error } = await client.from("agendamentos")
-    .select("*")
-    .gte("horario", `${dataInput.value}T00:00:00`)
-    .lt("horario", `${dataInput.value}T23:59:59`);
-
-  if(error){
-    console.error("Erro ao buscar agendamentos:", error);
-    quadro.innerHTML = "<p>Erro ao carregar horários</p>";
-    return;
-  }
-
-  // conjunto de índices de slots ocupados (0..N)
-  const ocupadosIdx = new Set();
-
-  agendamentos?.forEach(a => {
-    // tenta normalizar valor de horario e tempo_extra
-    if(!a.horario) return;
-    const dt = new Date(a.horario + "");
-    if (isNaN(dt.getTime())) return;
-
-    const start = dt.getHours()*60 + dt.getMinutes();
-
-    // tempo_extra já é duração total em horas (você confirmou B)
-    let durHoras = Number(a.tempo_extra);
-    if (!durHoras || isNaN(durHoras)) {
-      // fallback seguro: 1 hora (não bloqueia indefinidamente)
-      durHoras = 1;
-    }
-
-    const dur = durHoras * 60;
-    const end = start + dur;
-
-    // verificar quais blocos de 1h são interceptados
-    padraoMins.forEach((slot, idx) => {
-      // trata o último slot corretamente:
-      // se for o último slot (17:00) não considere slot+60 -> evita extrapolar 18:00 inexistente
-const slotEnd =
-  (idx === padraoMins.length - 1)
-    ? slot + 0.1  // impede o sistema de bloquear 17:00 à toa
-    : slot + 60;
-      // se o intervalo [slot, slotEnd) intercepta [start, end)
-      const intersects = (slot < end) && (start < slotEnd);
-      if(intersects){
-        ocupadosIdx.add(idx);
-      }
-    });
-  });
-
-  // quantos slots (1h) precisa ocupar pela seleção atual
-  const durSlots = Math.ceil(getDuracaoSelecionadaHoras());
-
-  horariosPadrao.forEach((hora, idx)=>{
+  horariosPadrao.forEach(hora=>{
     const div = document.createElement("div");
     div.textContent = hora;
     div.classList.add("horario");
 
-    // verificar se algum dos próximos durSlots está ocupado (ou extrapola array)
-    let bloqueado = false;
-    for(let k=0;k<durSlots;k++){
-      if(idx + k >= horariosPadrao.length || ocupadosIdx.has(idx + k)){
-        bloqueado = true;
-        break;
-      }
-    }
+    div.addEventListener("click", ()=>{
+      quadro.querySelectorAll(".selecionado").forEach(e=>e.classList.remove("selecionado"));
+      div.classList.add("selecionado");
+      horarioSelecionado = hora;
 
-    if(bloqueado){
-      div.classList.add("ocupado");
-      // não adiciona listener
-    } else {
-      div.addEventListener("click", ()=>{
-        quadro.querySelectorAll(".selecionado").forEach(e=>e.classList.remove("selecionado"));
-        div.classList.add("selecionado");
-        horarioSelecionado = hora;
-        horarioInput.value = `${dataInput.value}T${hora}:00`;
-      });
-    }
+      // ===== Ajuste para fuso horário local =====
+      const [h,m] = hora.split(":");
+      const year = dataInput.value.split("-")[0];
+      const month = dataInput.value.split("-")[1];
+      const day = dataInput.value.split("-")[2];
+
+      // Cria string no formato YYYY-MM-DDTHH:mm (sem conversão UTC)
+      horarioInput.value = `${year}-${month}-${day}T${h}:${m}`;
+    });
 
     quadro.appendChild(div);
   });
 }
 
-// ===================== CHANGE COM DEBOUNCE =====================
+// ===================== CHANGE DEBOUNCE =====================
 let debounceTimer;
-dataInput.addEventListener("change", () => {
+dataInput.addEventListener("change", ()=>{
   clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => {
-    horarioSelecionado = null;
-    horarioInput.value = "";
+  debounceTimer = setTimeout(()=>{
     atualizarQuadro();
-  }, 150);
+  },150);
 });
 
-// ===================== ENVIAR FORM =====================
-form.addEventListener("submit", async e=>{
+// ===================== SUBMIT FORM =====================
+form.addEventListener("submit", e=>{
   e.preventDefault();
-  if(!horarioSelecionado){
-    alert("Selecione um horário");
-    return;
-  }
+  if(!horarioSelecionado){ alert("Selecione um horário"); return; }
 
-  // AQUI salvamos tempo_extra como a duração TOTAL (base + extras)
+  const agendamentos = getAgendamentos();
   const obj = {
     nome_cliente: nomeCliente,
-    horario: horarioInput.value, // timestamp ISO local (ex: 2029-04-23T17:00:00)
+    horario: horarioInput.value,
     tranca: braidData.name || null,
     comprimento: braidData.comprimento || null,
     espessura: braidData.espessura || null,
     cor: braidData.cor || null,
     extras: braidData.extras ? JSON.stringify(braidData.extras) : null,
-    tempo_extra: getDuracaoSelecionadaHoras(), // total em horas
-    status: "pendente"
+    duracao_minutos: getDuracaoSelecionadaMinutos(),
+    status:"pendente"
   };
 
-  const { error } = await client.from("agendamentos").insert([obj]);
-  if(error){
-    alert("Erro: "+error.message);
-    return;
-  }
+  agendamentos.push(obj);
+  saveAgendamentos(agendamentos);
 
-  alert("Agendado com sucesso!");
+  alert("Finalizando seu agendamento...");
 
-  const dt = new Date(horarioInput.value + "");
-  const numero = "5511999999999";
+  // ===== Corrige fuso horário para WhatsApp =====
+  const dt = new Date(horarioInput.value);
   const diaStr = dt.toLocaleDateString("pt-BR");
   const horaStr = dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
-  const msg = `Olá! Sou ${nomeCliente} e agendei minha trança ${braidData.name} para ${diaStr} às ${horaStr}.`;
-
+  const numero = "5511999999999";
+  const msg = `Olá! Sou ${nomeCliente} e gostaria de agendar minha trança  ${braidData.name}, e ver a disponibilidade para ${diaStr} às ${horaStr}.`;
   window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`);
 
   form.reset();
@@ -486,44 +319,23 @@ form.addEventListener("submit", async e=>{
   carregarAgendamentos();
 });
 
-// ===================== LISTA DE AGENDAMENTOS =====================
-async function carregarAgendamentos(){
-  const { data, error } = await client.from("agendamentos")
-    .select("*")
-    .order("horario",{ascending:true});
-
-  if(error){
-    console.error("Erro ao carregar agendamentos:", error);
-    return;
-  }
-
+// ===================== LISTAR AGENDAMENTOS =====================
+function carregarAgendamentos(){
+  const agendamentos = getAgendamentos();
   lista.innerHTML = "";
-
-  data?.forEach(item=>{
-    if(tipoUsuario==="cliente" &&
-       item.nome_cliente.toLowerCase() !== nomeCliente.toLowerCase()) return;
-
-    const dt = new Date(item.horario + "");
+  agendamentos.forEach(item=>{
+    if(tipoUsuario==="cliente" && item.nome_cliente.toLowerCase()!==nomeCliente.toLowerCase()) return;
+    const dt = new Date(item.horario);
     const li = document.createElement("li");
-    li.textContent =
-      `${dt.toLocaleDateString("pt-BR")} - ${dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})} - ${item.tranca}`;
+    li.textContent = `${dt.toLocaleDateString("pt-BR")} - ${dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})} - ${item.tranca}`;
     lista.appendChild(li);
   });
 }
 
-// ===================== INICIALIZAÇÃO =====================
+// ===================== INICIAR =====================
 carregarAgendamentos();
-atualizarQuadro();
+if(dataInput.value) atualizarQuadro();
 </script>
-
-
-
-
-
-
-
-
-
 
 </body>
 </html>

@@ -6,135 +6,219 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin:0; padding:0; }
+:root{
+  --bg:#08060a;
+  --surface:#121018;
+  --muted:#bfb7d6;
+  --accent:#8a46ff;
+  --accent-2:#c39bff;
+  --card:#161319;
+  --radius:14px;
+  --gap:18px;
+}
+
+/* ===================== RESET ===================== */
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Segoe UI', Poppins, system-ui;
+  background: linear-gradient(180deg,var(--bg),#050205);
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  padding:20px;
+  display:flex;
+  justify-content:center;
+}
+
+/* ===================== CONTAINER LOGIN ===================== */
+.login-container {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 40px 35px;
+  width: 350px;
+  max-width: 95%;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  text-align: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* ===================== AVATAR ===================== */
+.avatar {
+  font-size: 80px;
+  color: var(--accent);
+  background: #1a1622;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px auto;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+/* ===================== TÍTULO ===================== */
+.login-container h2 {
+  margin-bottom: 25px;
+  font-weight: 700;
+  color: var(--accent-2);
+  font-size: 1.8rem;
+  transition: all 0.3s ease;
+}
+
+/* ===================== TABS ===================== */
+.tab-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  gap: 10px;
+}
+
+.tab-btns button {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  background: #1a1622;
+  color: var(--accent-2);
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 12px;
+}
+
+.tab-btns button.active {
+  background: linear-gradient(90deg,var(--accent),var(--accent-2));
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(138,70,255,0.4);
+}
+
+/* ===================== FORMULÁRIO ===================== */
+.form-login {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-login.active {
+  display: flex;
+}
+
+.input-icon {
+  position: relative;
+}
+
+.input-icon input {
+  width: 100%;
+  padding: 14px 45px 14px 15px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--card);
+  color: #fff;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+
+.input-icon input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.input-icon i {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+}
+
+/* ===================== BOTÃO ===================== */
+.login-btn {
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius);
+  background: linear-gradient(90deg,var(--accent),var(--accent-2));
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  background: linear-gradient(90deg,var(--accent-2),var(--accent));
+}
+
+/* ===================== RESPONSIVIDADE AVANÇADA ===================== */
+@media (max-width: 600px) {
   body {
-    font-family: 'Roboto', sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg,#4CAF50,#81C784);
+    padding: 10px;
   }
 
   .login-container {
-    background: #fff;
-    border-radius: 20px;
-    padding: 40px 35px;
-    width: 350px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-    text-align: center;
-    position: relative;
+    width: 100%;
+    padding: 30px 20px;
   }
 
-  /* Ícone do usuário em cima */
   .avatar {
-    font-size: 80px;
-    color: #4CAF50;
-    background: #eafaf1;
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto 20px auto;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 80px;
+    height: 80px;
+    font-size: 60px;
+    margin-bottom: 15px;
   }
 
   .login-container h2 {
-    margin-bottom: 25px;
-    font-weight: 700;
-    color: #333;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
   }
 
   .tab-btns {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 25px;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .tab-btns button {
-    flex: 1;
-    padding: 10px 0;
-    border: none;
-    background: #f0f0f0;
-    color: #333;
-    font-weight: 500;
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 12px;
-    margin: 0 5px;
-  }
-
-  .tab-btns button.active {
-    background: #4CAF50;
-    color: #fff;
-    box-shadow: 0 5px 15px rgba(76,175,80,0.4);
-  }
-
-  .form-login {
-    display: none;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .form-login.active {
-    display: flex;
-  }
-
-  .input-icon {
-    position: relative;
+    padding: 12px 0;
+    font-size: 1rem;
   }
 
   .input-icon input {
-    width: 100%;
-    padding: 14px 45px 14px 15px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
+    padding: 12px 40px 12px 12px;
     font-size: 1rem;
-    transition: 0.3s;
-  }
-
-  .input-icon input:focus {
-    border-color: #4CAF50;
-    outline: none;
-  }
-
-  .input-icon i {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #999;
   }
 
   .login-btn {
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
-    background: #4CAF50;
-    color: #fff;
+    padding: 12px;
     font-size: 1rem;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.3s;
+  }
+}
+
+/* ===================== RESPONSIVIDADE EXTRA PEQUENA ===================== */
+@media (max-width: 380px) {
+  .avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 50px;
   }
 
-  .login-btn:hover {
-    background: #43a047;
+  .login-container h2 {
+    font-size: 1.3rem;
   }
 
-  /* ===================== MEDIA QUERIES ===================== */
-  @media (max-width: 480px){
-    .login-container { width: 95%; padding: 25px 20px; }
-    .login-container h2 { font-size: 1.5rem; }
-    .tab-btns button { padding: 8px 0; font-size: 0.9rem; margin: 0 3px; }
-    .input-icon input { padding: 12px 40px 12px 12px; font-size: 0.95rem; }
-    .login-btn { padding: 12px; font-size: 0.95rem; }
-    .avatar { font-size: 60px; width: 80px; height: 80px; }
+  .input-icon input {
+    padding: 10px 35px 10px 10px;
+    font-size: 0.95rem;
   }
+
+  .login-btn {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+}
 </style>
+
+
 </head>
 <body>
 
