@@ -19,7 +19,7 @@
   --radius:16px;
 }
 
-/* ===================== RESET ===================== */
+/* RESET */
 *{
   box-sizing:border-box;
   margin:0;
@@ -36,7 +36,7 @@ body{
   align-items:center;
 }
 
-/* ===================== CONTAINER LOGIN ===================== */
+/* CONTAINER */
 .login-container{
   background: var(--surface);
   border-radius: var(--radius);
@@ -47,96 +47,81 @@ body{
   text-align:center;
 }
 
-/* ===================== AVATAR ===================== */
+/* AVATAR */
 .avatar{
-  width:100px;
-  height:100px;
-  margin:0 auto 24px;
+  width:110px;
+  height:110px;
+  margin:0 auto 28px;
   border-radius:50%;
   background:#1a1622;
   display:flex;
   justify-content:center;
   align-items:center;
-  font-size:70px;
+  font-size:78px;
   color:var(--accent);
 }
 
-/* ===================== TÍTULO ===================== */
-.login-container h2{
-  margin-bottom:28px;
-  font-size:1.8rem;
+/* TÍTULO */
+h2{
+  margin-bottom:32px;
+  font-size:1.9rem;
   color:var(--accent-2);
 }
 
-/* ===================== TABS ===================== */
-.tab-btns{
-  display:flex;
-  gap:14px;
-  margin-bottom:30px;
-}
-
-.tab-btns button{
-  flex:1;
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  background:#1a1622;
-  color:var(--accent-2);
-  font-weight:600;
-  cursor:pointer;
-}
-
-.tab-btns button.active{
-  background:linear-gradient(90deg,var(--accent),var(--accent-2));
-  color:#fff;
-}
-
-/* ===================== FORM ===================== */
+/* FORM */
 .form-login{
-  display:none;
-  flex-direction:column;
-  gap:20px;
-}
-
-.form-login.active{
   display:flex;
+  flex-direction:column;
+  gap:22px;
 }
 
-/* ===================== INPUT ===================== */
+/* INPUT */
 .input-icon{
   position:relative;
 }
 
 .input-icon input{
   width:100%;
-  padding:16px 48px 16px 16px;
+  padding:18px 54px 18px 18px;
   border-radius:var(--radius);
   border:1px solid rgba(255,255,255,0.15);
   background:var(--card);
   color:#fff;
-  font-size:1.05rem;
+  font-size:1.1rem;
 }
 
 .input-icon i{
   position:absolute;
-  right:16px;
+  right:18px;
   top:50%;
   transform:translateY(-50%);
   color:var(--muted);
+  font-size:26px;
 }
 
-/* ===================== BOTÃO ===================== */
+.input-icon input:focus{
+  outline:none;
+  border-color:var(--accent);
+}
+
+/* BOTÃO */
 .login-btn{
-  padding:16px;
+  margin-top:10px;
+  padding:18px;
   border:none;
   border-radius:var(--radius);
   background:linear-gradient(90deg,var(--accent),var(--accent-2));
   color:#fff;
-  font-size:1.05rem;
+  font-size:1.15rem;
   font-weight:700;
+  cursor:pointer;
 }
 
-/* ===================== MOBILE ===================== */
+.login-btn:active{
+  transform:scale(0.97);
+}
+
+/* MOBILE */
 @media (max-width:480px){
   body{
     align-items:stretch;
@@ -146,34 +131,14 @@ body{
     min-height:100dvh;
     max-width:100%;
     border-radius:0;
-    padding:48px 24px;
+    padding:56px 26px;
     display:flex;
     flex-direction:column;
     justify-content:center;
   }
 
-  .avatar{
-    width:120px;
-    height:120px;
-    font-size:82px;
-  }
-
   h2{
-    font-size:2rem;
-  }
-
-  .tab-btns{
-    flex-direction:column;
-  }
-
-  .input-icon input{
-    font-size:1.15rem;
-    padding:20px 56px 20px 20px;
-  }
-
-  .login-btn{
-    padding:20px;
-    font-size:1.15rem;
+    font-size:2.1rem;
   }
 }
 </style>
@@ -189,32 +154,39 @@ body{
 
   <h2>Login Agenda</h2>
 
-  <div class="tab-btns">
-    <button id="loginClienteBtn" class="active">Cliente</button>
-  
-  </div>
-
-  <div id="loginCliente" class="form-login active">
+  <div class="form-login">
     <div class="input-icon">
-      <input type="text" placeholder="Digite seu nome">
+      <input type="text" id="nomeCliente" placeholder="Digite seu nome">
       <i class="material-icons">person</i>
     </div>
+
     <div class="input-icon">
-      <input type="text" placeholder="Digite seu número">
+      <input type="text" id="numeroCliente" placeholder="Digite seu número">
       <i class="material-icons">phone</i>
     </div>
-    <button class="login-btn">Entrar</button>
-  </div>
 
-  <div id="loginAdmin" class="form-login">
-    <div class="input-icon">
-      <input type="password" placeholder="Senha da dona">
-      <i class="material-icons">lock</i>
-    </div>
-    <button class="login-btn">Entrar</button>
+    <button class="login-btn" id="entrarCliente">Entrar</button>
   </div>
 
 </div>
+
+<script>
+document.getElementById("entrarCliente").addEventListener("click", () => {
+  const nome = document.getElementById("nomeCliente").value.trim();
+  const numero = document.getElementById("numeroCliente").value.trim();
+
+  if (!nome || !numero) {
+    alert("Preencha nome e número!");
+    return;
+  }
+
+  sessionStorage.setItem("tipoUsuario", "cliente");
+  sessionStorage.setItem("nomeCliente", nome);
+  sessionStorage.setItem("numeroCliente", numero);
+
+  window.location.href = "agenda.html";
+});
+</script>
 
 </body>
 </html>
