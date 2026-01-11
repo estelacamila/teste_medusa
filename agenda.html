@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Agenda Digital</title>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda Digital</title>
+  <style>
+
 /* ===================== VARIÁVEIS ===================== */
 :root{
   --bg:#08060a;
@@ -171,6 +173,21 @@ li{
   #quadro-horarios{
     grid-template-columns: repeat(2, 1fr);
   }
+  @media (max-width: 768px) {
+  body {
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 }
 </style>
 </head>
