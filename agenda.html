@@ -17,57 +17,63 @@
 }
 
 /* ===================== RESET ===================== */
-*{box-sizing:border-box;}
-body{
+*{
+  box-sizing:border-box;
   margin:0;
+  padding:0;
+}
+
+html, body{
+  width:100%;
+  height:100%;
+}
+
+body{
   font-family:'Segoe UI', Poppins, system-ui;
   background: linear-gradient(180deg,var(--bg),#050205);
   color:#fff;
   -webkit-font-smoothing:antialiased;
-  padding:20px;
+
   display:flex;
   justify-content:center;
+  align-items:center;
 }
 
+/* ===================== CONTAINER ===================== */
 .container{
   background: var(--surface);
   border-radius: var(--radius);
-  padding:25px 20px;
+  padding:30px 25px;
   width:100%;
-  max-width:480px;
-  box-shadow:0 6px 25px rgba(0,0,0,0.3);
+  max-width:520px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.45);
 }
 
 /* ===================== LOGO ===================== */
 h1{
   text-align:center;
-  margin-bottom:20px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:12px;
+  margin-bottom:25px;
   font-size:2rem;
   color: var(--accent-2);
 }
 
-/* ===================== FORMULÁRIO ===================== */
+/* ===================== FORM ===================== */
 label{
   display:block;
-  margin-bottom:5px;
+  margin-bottom:6px;
   font-weight:600;
   color: var(--accent-2);
 }
 
 input, select{
   width:100%;
-  padding:12px;
+  padding:14px;
   font-size:1rem;
   border-radius: var(--radius);
   border:1px solid rgba(255,255,255,0.1);
   background: var(--card);
   color:#fff;
-  margin-bottom:12px;
+  margin-bottom:14px;
 }
 
 input:focus, select:focus{
@@ -78,92 +84,93 @@ input:focus, select:focus{
 input[readonly]{
   background:#1a1622;
   color:#aaa;
-  cursor:not-allowed;
 }
 
+/* ===================== BOTÃO ===================== */
 button{
   background: linear-gradient(90deg,var(--accent),var(--accent-2));
   color:#fff;
   font-weight:bold;
   border:none;
-  padding:12px;
+  padding:14px;
   border-radius: var(--radius);
   cursor:pointer;
   transition:0.3s;
-  width: 100%;
+  width:100%;
+  font-size:1.05rem;
 }
 
 button:hover{
-  background: linear-gradient(90deg,var(--accent-2),var(--accent));
+  opacity:0.9;
 }
 
-/* ===================== QUADRO DE HORÁRIOS ===================== */
+/* ===================== HORÁRIOS ===================== */
 #quadro-horarios{
-  display:flex;
-  flex-wrap:wrap;
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px,1fr));
   gap:10px;
-  margin-top:5px;
+  margin-bottom:15px;
 }
 
 .horario{
-  flex:1 0 30%;
   text-align:center;
-  padding:10px 12px;
+  padding:12px;
   border-radius: var(--radius);
   cursor:pointer;
   background:#33004d;
-  color:#fff;
   border:1px solid var(--accent);
   font-weight:600;
-  transition:0.2s;
 }
 
 .horario.selecionado{
   background: var(--accent);
-  color:#fff;
 }
 
 /* ===================== AGENDAMENTOS ===================== */
 h2{
-  margin-bottom:15px;
+  margin:25px 0 15px;
   color: var(--accent-2);
-  font-size:1.5rem;
+  font-size:1.4rem;
   border-bottom:1px solid rgba(255,255,255,0.1);
   padding-bottom:5px;
 }
 
 ul{
   list-style:none;
-  padding:0;
-  margin:0;
 }
 
-.horario-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+li{
   background:#1a1622;
-  padding:10px 12px;
-  margin-top:8px;
+  padding:12px;
+  margin-bottom:10px;
   border-radius: var(--radius);
-  box-shadow:0 2px 6px rgba(0,0,0,0.4);
   font-size:0.95rem;
-  transition:0.2s;
 }
 
-.horario-item:hover{
-  background:#2e1f49;
-}
+/* ===================== 📱 MOBILE ===================== */
+@media (max-width: 480px){
 
-.horario-item span{
-  font-weight:600;
-  color:#fff;
-  flex-grow:1;
-}
+  body{
+    padding:20px;
+  }
 
-/* ===================== RESPONSIVIDADE ===================== */
-@media (max-width: 480px) {
-  .horario { flex: 1 0 100%; font-size:0.95rem; }
+  .container{
+    max-width:100%;
+    padding:28px 20px;
+  }
+
+  h1{
+    font-size:1.7rem;
+  }
+
+  input, button{
+    font-size:1rem;
+    padding:15px;
+  }
+
+  #quadro-horarios{
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 </style>
 </head>
