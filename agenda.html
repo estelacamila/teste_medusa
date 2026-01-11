@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agenda Digital</title>
-  <style>
- /* ===================== VARIÁVEIS ===================== */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda Digital</title>
+
+<style>
+/* ===================== VARIÁVEIS ===================== */
 :root{
   --bg:#08060a;
   --surface:#121018;
@@ -18,9 +19,9 @@
 
 /* ===================== RESET ===================== */
 *{
-  box-sizing:border-box;
   margin:0;
   padding:0;
+  box-sizing:border-box;
 }
 
 html, body{
@@ -32,9 +33,6 @@ body{
   font-family:'Segoe UI', Poppins, system-ui;
   background: linear-gradient(180deg,var(--bg),#050205);
   color:#fff;
-  -webkit-font-smoothing:antialiased;
-
-  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -51,12 +49,20 @@ body{
   box-shadow:0 12px 45px rgba(0,0,0,0.5);
 }
 
-/* ===================== TÍTULO ===================== */
+/* ===================== TÍTULOS ===================== */
 h1{
   text-align:center;
   margin-bottom:32px;
   font-size:2rem;
-  color: var(--accent-2);
+  color:var(--accent-2);
+}
+
+h2{
+  margin:36px 0 18px;
+  font-size:1.4rem;
+  color:var(--accent-2);
+  border-bottom:1px solid rgba(255,255,255,0.12);
+  padding-bottom:8px;
 }
 
 /* ===================== FORM ===================== */
@@ -68,108 +74,97 @@ form{
 
 label{
   font-weight:600;
-  color: var(--accent-2);
-  margin-bottom:6px;
+  color:var(--accent-2);
 }
 
-/* INPUTS PADRÃO */
+/* ===================== INPUTS ===================== */
 input, select{
   width:100%;
   padding:16px;
   font-size:1rem;
-  border-radius: var(--radius);
+  border-radius:var(--radius);
   border:1px solid rgba(255,255,255,0.12);
-  background: var(--card);
+  background:var(--card);
   color:#fff;
-  box-sizing:border-box;
-}
-
-/* 🔥 CORREÇÃO DEFINITIVA DO INPUT DATE */
-input[type="date"]{
-  appearance:none;
-  -webkit-appearance:none;
-  height:56px;
-  text-align:left;
-}
-
-/* força alinhamento do texto no Android */
-input[type="date"]::-webkit-date-and-time-value{
-  text-align:left;
-}
-
-/* ícone do calendário mais discreto */
-input[type="date"]::-webkit-calendar-picker-indicator{
-  filter: invert(1);
-  opacity: 0.7;
 }
 
 input:focus, select:focus{
   outline:none;
-  border-color: var(--accent);
+  border-color:var(--accent);
 }
 
-input[readonly]{
-  background:#1a1622;
-  color:#aaa;
+/* ===================== INPUT DATE (CORRIGIDO) ===================== */
+input[type="date"]{
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+
+  padding:14px 16px;
+  min-height:48px;
+  font-size:1rem;
+  line-height:1.2;
+
+  -webkit-appearance:none;
+  appearance:none;
+}
+
+/* Android */
+input[type="date"]::-webkit-date-and-time-value{
+  text-align:left;
+}
+
+/* Ícone do calendário */
+input[type="date"]::-webkit-calendar-picker-indicator{
+  filter:invert(1);
+  opacity:0.7;
 }
 
 /* ===================== HORÁRIOS ===================== */
 #quadro-horarios{
   display:grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns:repeat(2,1fr);
   gap:14px;
-  margin-top:6px;
 }
 
 .horario{
+  padding:14px;
   text-align:center;
-  padding:14px 10px;
-  border-radius: var(--radius);
+  border-radius:var(--radius);
   cursor:pointer;
   background:#2b003f;
   border:1px solid var(--accent);
   font-weight:600;
-  font-size:1rem;
   transition:0.25s;
 }
 
 .horario:hover{
-  transform:scale(1.02);
+  transform:scale(1.03);
 }
 
 .horario.selecionado{
-  background: linear-gradient(90deg,var(--accent),var(--accent-2));
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
   color:#fff;
 }
 
 /* ===================== BOTÃO ===================== */
 button{
   margin-top:28px;
-  background: linear-gradient(90deg,var(--accent),var(--accent-2));
+  padding:16px;
+  border:none;
+  border-radius:var(--radius);
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
   color:#fff;
   font-weight:bold;
-  border:none;
-  padding:16px;
-  border-radius: var(--radius);
+  font-size:1.05rem;
   cursor:pointer;
   transition:0.3s;
-  width:100%;
-  font-size:1.05rem;
 }
 
 button:hover{
-  opacity:0.92;
+  opacity:0.9;
 }
 
-/* ===================== AGENDAMENTOS ===================== */
-h2{
-  margin:36px 0 18px;
-  color: var(--accent-2);
-  font-size:1.4rem;
-  border-bottom:1px solid rgba(255,255,255,0.12);
-  padding-bottom:8px;
-}
-
+/* ===================== LISTA ===================== */
 ul{
   list-style:none;
 }
@@ -177,70 +172,62 @@ ul{
 li{
   background:#1a1622;
   padding:14px;
+  border-radius:var(--radius);
   margin-bottom:12px;
-  border-radius: var(--radius);
   font-size:0.95rem;
 }
 
-/* ===================== 📱 MOBILE ===================== */
-@media (max-width: 480px){
+/* ===================== MOBILE ===================== */
+@media(max-width:480px){
   .container{
-    padding:32px 20px;
+    padding:30px 20px;
   }
 
   h1{
     font-size:1.8rem;
   }
-
-  input, button{
-    font-size:1rem;
-  }
 }
-
 </style>
-
 </head>
+
 <body>
 
 <div class="container">
-<h1>Agenda Digital</h1>
+  <h1>Agenda Digital</h1>
 
-<form id="form-agenda">
-  <label>Nome do Cliente</label>
-  <input type="text" id="nome" readonly />
+  <form id="form-agenda">
+    <label>Nome do Cliente</label>
+    <input type="text" id="nome" readonly>
 
-  <label>Trança Escolhida</label>
-  <input type="text" id="trancaEscolhida" readonly />
+    <label>Trança Escolhida</label>
+    <input type="text" id="trancaEscolhida" readonly>
 
-  <label for="data">Selecione uma data</label>
-  <input type="date" id="data" required />
+    <label>Selecione uma data</label>
+    <input type="date" id="data" required>
 
-  <input type="hidden" id="horario" required />
-  <div id="quadro-horarios"></div>
-  <button type="submit">Agendar</button>
-</form>
+    <input type="hidden" id="horario">
+    <div id="quadro-horarios"></div>
 
-<h2>Agendamentos</h2>
-<ul id="lista"></ul>
+    <button type="submit">Agendar</button>
+  </form>
+
+  <h2>Agendamentos</h2>
+  <ul id="lista"></ul>
 </div>
 
 <script>
-// ===================== LOGIN / SESSÃO =====================
+// ===================== SESSÃO =====================
 const tipoUsuario = sessionStorage.getItem("tipoUsuario");
 const nomeCliente = sessionStorage.getItem("nomeCliente") || "";
-if(!tipoUsuario){ window.location.href = "login.html"; }
+if(!tipoUsuario) location.href = "login.html";
 
-const nomeInput = document.getElementById("nome");
-if(tipoUsuario==="cliente") nomeInput.value = nomeCliente;
+document.getElementById("nome").value = nomeCliente;
 
-// ===================== DADOS DA TRANÇA =====================
+// ===================== TRANÇA =====================
 const braidData = JSON.parse(sessionStorage.getItem("braidData") || "{}");
-const trancaInput = document.getElementById("trancaEscolhida");
-if(Object.keys(braidData).length>0){
-  trancaInput.value = braidData.name || "";
-}
+document.getElementById("trancaEscolhida").value = braidData.name || "";
 
-// ===================== ELEMENTOS DOM =====================
+// ===================== ELEMENTOS =====================
 const form = document.getElementById("form-agenda");
 const lista = document.getElementById("lista");
 const dataInput = document.getElementById("data");
@@ -248,126 +235,75 @@ const horarioInput = document.getElementById("horario");
 const quadro = document.getElementById("quadro-horarios");
 
 // ===================== HORÁRIOS =====================
-const horariosPadrao = ["08:00","09:00","10:00","11:00","11:30","14:30","15:00","16:00","17:00","18:00"];
+const horarios = ["08:00","09:00","10:00","11:00","11:30","14:30","15:00","16:00","17:00","18:00"];
 let horarioSelecionado = null;
 
-// ===================== DURAÇÃO EM MINUTOS =====================
-const duracoesHoras = {
-  "Box Braids":4.5, "Gypsy Braids":4.5, "Goddess Braids":4,
-  "Ghana Braids":2, "Faux Locs":4, "Trança Nagô":1,
-  "Fulani Braids":4, "Lemonade Braids":2, "French Curl":4,
-  "Slim Braids":4.5, "Boho Braids":4.5, "Flat Twist":2,
-  "Bantu Knots":2.5, "Twist Feminino":5, "Boxeadora":1.5,
-  "Mohswk Braids":5
-};
-
-function getDuracaoSelecionadaMinutos(){
-  let base = duracoesHoras[braidData.name] || 60;
-  let extra = 0;
-  if(braidData.espessura && braidData.espessura.toLowerCase().includes("fina")) extra += 60;
-  if(braidData.tempoExtra) extra += Number(braidData.tempoExtra)*60 || 0;
-  return Math.round(base*60 + extra);
-}
-
-// ===================== FUNÇÕES DE AGENDA LOCAL =====================
-function getAgendamentos() {
-  return JSON.parse(sessionStorage.getItem("agendamentos") || "[]");
-}
-function saveAgendamentos(arr) {
-  sessionStorage.setItem("agendamentos", JSON.stringify(arr));
-}
-
-// ===================== ATUALIZAR QUADRO =====================
 function atualizarQuadro(){
   quadro.innerHTML = "";
   horarioSelecionado = null;
-  horarioInput.value = "";
 
-  horariosPadrao.forEach(hora=>{
+  horarios.forEach(h=>{
     const div = document.createElement("div");
-    div.textContent = hora;
-    div.classList.add("horario");
+    div.className = "horario";
+    div.textContent = h;
 
-    div.addEventListener("click", ()=>{
-      quadro.querySelectorAll(".selecionado").forEach(e=>e.classList.remove("selecionado"));
+    div.onclick = ()=>{
+      document.querySelectorAll(".horario").forEach(el=>el.classList.remove("selecionado"));
       div.classList.add("selecionado");
-      horarioSelecionado = hora;
+      horarioSelecionado = h;
 
-      // ===== Ajuste para fuso horário local =====
-      const [h,m] = hora.split(":");
-      const year = dataInput.value.split("-")[0];
-      const month = dataInput.value.split("-")[1];
-      const day = dataInput.value.split("-")[2];
-
-      // Cria string no formato YYYY-MM-DDTHH:mm (sem conversão UTC)
-      horarioInput.value = `${year}-${month}-${day}T${h}:${m}`;
-    });
+      const [hh,mm] = h.split(":");
+      horarioInput.value = `${dataInput.value}T${hh}:${mm}`;
+    };
 
     quadro.appendChild(div);
   });
 }
 
-// ===================== CHANGE DEBOUNCE =====================
-let debounceTimer;
-dataInput.addEventListener("change", ()=>{
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(()=>{
-    atualizarQuadro();
-  },150);
-});
+dataInput.addEventListener("change", atualizarQuadro);
 
-// ===================== SUBMIT FORM =====================
-form.addEventListener("submit", e=>{
+// ===================== STORAGE =====================
+function getAgendamentos(){
+  return JSON.parse(sessionStorage.getItem("agendamentos") || "[]");
+}
+
+function saveAgendamentos(arr){
+  sessionStorage.setItem("agendamentos", JSON.stringify(arr));
+}
+
+// ===================== SUBMIT =====================
+form.onsubmit = e=>{
   e.preventDefault();
-  if(!horarioSelecionado){ alert("Selecione um horário"); return; }
+  if(!horarioSelecionado) return alert("Selecione um horário");
 
   const agendamentos = getAgendamentos();
-  const obj = {
-    nome_cliente: nomeCliente,
-    horario: horarioInput.value,
-    tranca: braidData.name || null,
-    comprimento: braidData.comprimento || null,
-    espessura: braidData.espessura || null,
-    cor: braidData.cor || null,
-    extras: braidData.extras ? JSON.stringify(braidData.extras) : null,
-    duracao_minutos: getDuracaoSelecionadaMinutos(),
-    status:"pendente"
-  };
+  agendamentos.push({
+    nome_cliente:nomeCliente,
+    horario:horarioInput.value,
+    tranca:braidData.name || ""
+  });
 
-  agendamentos.push(obj);
   saveAgendamentos(agendamentos);
-
-  alert("Finalizando seu agendamento...");
-
-  // ===== Corrige fuso horário para WhatsApp =====
-  const dt = new Date(horarioInput.value);
-  const diaStr = dt.toLocaleDateString("pt-BR");
-  const horaStr = dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
-  const numero = "5511999999999";
-  const msg = `Olá! Sou ${nomeCliente} e gostaria de agendar minha trança  ${braidData.name}, e ver a disponibilidade para ${diaStr} às ${horaStr}.`;
-  window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`);
-
-  form.reset();
-  atualizarQuadro();
   carregarAgendamentos();
-});
 
-// ===================== LISTAR AGENDAMENTOS =====================
+  const dt = new Date(horarioInput.value);
+  const msg = `Olá! Sou ${nomeCliente} e gostaria de agendar ${braidData.name} para ${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}.`;
+  window.open(`https://wa.me/55179914966548?text=${encodeURIComponent(msg)}`);
+};
+
+// ===================== LISTAR =====================
 function carregarAgendamentos(){
-  const agendamentos = getAgendamentos();
   lista.innerHTML = "";
-  agendamentos.forEach(item=>{
-    if(tipoUsuario==="cliente" && item.nome_cliente.toLowerCase()!==nomeCliente.toLowerCase()) return;
-    const dt = new Date(item.horario);
+  getAgendamentos().forEach(a=>{
+    if(tipoUsuario==="cliente" && a.nome_cliente!==nomeCliente) return;
+    const dt = new Date(a.horario);
     const li = document.createElement("li");
-    li.textContent = `${dt.toLocaleDateString("pt-BR")} - ${dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})} - ${item.tranca}`;
+    li.textContent = `${dt.toLocaleDateString("pt-BR")} - ${dt.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})} - ${a.tranca}`;
     lista.appendChild(li);
   });
 }
 
-// ===================== INICIAR =====================
 carregarAgendamentos();
-if(dataInput.value) atualizarQuadro();
 </script>
 
 </body>

@@ -13,8 +13,7 @@
   --accent:#8a46ff;
   --accent-2:#c39bff;
   --card:#161319;
-  --radius:14px;
-  --gap:18px;
+  --radius:16px;
 }
 
 /* ===================== RESET ===================== */
@@ -24,12 +23,18 @@
   padding:0;
 }
 
+html, body{
+  width:100%;
+  height:100%;
+}
+
 body{
   min-height:100vh;
   font-family:'Segoe UI', Poppins, system-ui;
   background: linear-gradient(180deg,var(--bg),#050205);
   color:#fff;
   -webkit-font-smoothing:antialiased;
+
   display:flex;
   justify-content:center;
   align-items:center;
@@ -40,31 +45,31 @@ body{
 .login-container{
   background: var(--surface);
   border-radius: var(--radius);
-  padding: 36px 32px;
+  padding:40px 34px;
   width:100%;
-  max-width:380px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  max-width:420px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
   text-align:center;
 }
 
 /* ===================== AVATAR ===================== */
 .avatar{
-  width:90px;
-  height:90px;
-  margin:0 auto 18px;
+  width:100px;
+  height:100px;
+  margin:0 auto 24px;
   border-radius:50%;
   background:#1a1622;
   display:flex;
   justify-content:center;
   align-items:center;
-  font-size:64px;
+  font-size:70px;
   color:var(--accent);
 }
 
 /* ===================== TÍTULO ===================== */
 .login-container h2{
-  margin-bottom:22px;
-  font-size:1.7rem;
+  margin-bottom:28px;
+  font-size:1.8rem;
   font-weight:700;
   color:var(--accent-2);
 }
@@ -72,18 +77,19 @@ body{
 /* ===================== TABS ===================== */
 .tab-btns{
   display:flex;
-  gap:12px;
-  margin-bottom:24px;
+  gap:14px;
+  margin-bottom:30px;
 }
 
 .tab-btns button{
   flex:1;
-  padding:12px 0;
+  padding:14px 0;
   border:none;
-  border-radius:12px;
+  border-radius:14px;
   background:#1a1622;
   color:var(--accent-2);
-  font-weight:500;
+  font-weight:600;
+  font-size:1rem;
   cursor:pointer;
   transition:0.25s;
 }
@@ -98,7 +104,7 @@ body{
 .form-login{
   display:none;
   flex-direction:column;
-  gap:18px;
+  gap:20px;
 }
 
 .form-login.active{
@@ -112,13 +118,12 @@ body{
 
 .input-icon input{
   width:100%;
-  padding:14px 44px 14px 14px;
+  padding:16px 48px 16px 16px;
   border-radius:var(--radius);
-  border:1px solid rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.14);
   background:var(--card);
   color:#fff;
-  font-size:1rem;
-  box-sizing:border-box;
+  font-size:1.05rem;
 }
 
 .input-icon input:focus{
@@ -128,77 +133,101 @@ body{
 
 .input-icon i{
   position:absolute;
-  right:14px;
+  right:16px;
   top:50%;
   transform:translateY(-50%);
-  font-size:22px;
+  font-size:24px;
   color:var(--muted);
 }
 
 /* ===================== BOTÃO ===================== */
 .login-btn{
-  margin-top:6px;
-  padding:14px;
+  margin-top:10px;
+  padding:16px;
   width:100%;
   border:none;
   border-radius:var(--radius);
   background:linear-gradient(90deg,var(--accent),var(--accent-2));
   color:#fff;
-  font-size:1rem;
-  font-weight:600;
+  font-size:1.05rem;
+  font-weight:700;
   cursor:pointer;
   transition:0.25s;
 }
 
 .login-btn:active{
-  transform:scale(0.98);
+  transform:scale(0.97);
 }
 
 /* ===================== MOBILE ===================== */
 @media (max-width:480px){
+  body{
+    padding:12px;
+  }
+
   .login-container{
-    padding:28px 20px;
+    width:100%;
+    max-width:100%;
+    min-height:85vh;
+    padding:44px 26px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
   }
 
   .avatar{
-    width:75px;
-    height:75px;
-    font-size:52px;
+    width:110px;
+    height:110px;
+    font-size:76px;
+    margin-bottom:30px;
   }
 
   .login-container h2{
-    font-size:1.45rem;
+    font-size:1.9rem;
+    margin-bottom:32px;
   }
 
   .tab-btns{
     flex-direction:column;
+    gap:16px;
+    margin-bottom:34px;
+  }
+
+  .tab-btns button{
+    padding:16px 0;
+    font-size:1.05rem;
+  }
+
+  .input-icon input{
+    padding:18px 52px 18px 18px;
+    font-size:1.1rem;
+  }
+
+  .login-btn{
+    padding:18px;
+    font-size:1.1rem;
   }
 }
-
-
 
 /* ===================== EXTRA PEQUENO ===================== */
 @media (max-width:360px){
   .login-container{
-    padding:24px 16px;
+    padding:36px 20px;
+  }
+
+  .avatar{
+    width:96px;
+    height:96px;
+    font-size:66px;
   }
 
   .login-container h2{
-    font-size:1.3rem;
-  }
-
-  .input-icon input{
-    font-size:0.95rem;
-    padding:12px 40px 12px 12px;
-  }
-
-  .login-btn{
-    font-size:0.95rem;
-    padding:12px;
+    font-size:1.6rem;
   }
 }
-
 </style>
+
 
 </head>
 <body>
