@@ -9,6 +9,19 @@ html, body {
 
 * { box-sizing: border-box; }
 
+.slogan{
+  width:100%;
+  text-align:center;
+  padding:10px 16px;
+  background:linear-gradient(135deg, #2b1730, #6a3ef0);
+  color:#fff;
+  font-weight:600;
+  letter-spacing:0.4px;
+  font-size:0.95rem;
+  opacity:0.9;
+}
+
+
 body{
   margin:0;
   font-family:Inter, Poppins, system-ui;
