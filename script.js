@@ -9,55 +9,77 @@ const cart = [];
 // ===============================
 const trancasConfig = {
   "Box Braids": { duracao: "4h30", permiteEspessura: true, extras: [] },
+  "Box Braids masculina": { duracao: "3h", permiteEspessura: true, extras: [] },
+
   "Gypsy Braids": { duracao: "4h30", permiteEspessura: true, extras: [] },
+
   "Goddess Braids": {
     duracao: "4h",
     permiteEspessura: true,
     extras: ["Cachos Orgânicos", "Cachos Sintéticos"],
     precosExtras: { "Cachos Orgânicos": 60, "Cachos Sintéticos": 0 }
   },
+
   "Ghana Braids": {
     duracao: "2h",
     permiteEspessura: false,
     extras: ["Cachos Orgânicos"],
     precosExtras: { "Cachos Orgânicos": 50 }
   },
+
   "Faux Locs": { duracao: "4h", permiteEspessura: false, extras: [] },
+
   "Trança Nagô": {
     duracao: "1h",
     permiteEspessura: false,
     extras: ["Trança Desenhada", "Jumbo"],
     precosExtras: { "Trança Desenhada": 40, "Jumbo": 30 }
   },
+
+  "Trança Nagô masculina": {
+    duracao: "45min",
+    permiteEspessura: false,
+    extras: ["Trança Desenhada"],
+    precosExtras: { "Trança Desenhada": 30 }
+  },
+
   "Fulani Braids": {
     duracao: "4h",
     permiteEspessura: false,
     extras: ["Trança Desenhada", "Cachos Orgânicos"],
     precosExtras: { "Trança Desenhada": 50, "Cachos Orgânicos": 60 }
   },
+
   "Lemonade Braids": {
     duracao: "2h",
     permiteEspessura: false,
     extras: ["Cachos Orgânicos"],
     precosExtras: { "Cachos Orgânicos": 60 }
   },
+
   "French Curl": { duracao: "4h", permiteEspessura: true, extras: [] },
   "Slim Braids": { duracao: "4h30", permiteEspessura: false, extras: [] },
   "Boho Braids": { duracao: "4h30", permiteEspessura: true, extras: [] },
+
   "Flat Twist": {
     duracao: "2h",
     permiteEspessura: false,
     extras: ["Jumbo"],
     precosExtras: { "Jumbo": 50 }
   },
+
   "Bantu Knots": { duracao: "2h30", permiteEspessura: false, extras: [] },
+
   "Twist Feminino": { duracao: "5h", permiteEspessura: false, extras: [] },
+  "Twist masculina": { duracao: "3h", permiteEspessura: false, extras: [] },
+
   "Boxeadora": {
     duracao: "1h30",
     permiteEspessura: false,
     extras: ["Trança Desenhada"],
     precosExtras: { "Trança Desenhada": 20 }
   },
+
   "Mohswk Braids": { duracao: "5h", permiteEspessura: false, extras: [] }
 };
 
@@ -120,7 +142,6 @@ function montarComprimento() {
     }
   });
 
-  // 🔥 Atualiza valor ao trocar comprimento
   select.onchange = updateTotal;
 }
 

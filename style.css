@@ -105,14 +105,18 @@ body{
    LOGO
 ========================= */
 
-.brand-logo {
-  width: 72px;
-  height: 72px;
+.brand-logo{
+  width: 140px;
+  height: auto;
+  max-height: 64px;
   object-fit: contain;
-  border-radius: 50%;
-  background: #1a1622;
-  padding: 6px;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
 }
+
+
+
 
 .brand-text h1 {
   font-size: 1.6rem;
@@ -437,11 +441,7 @@ select, input[type="text"]{
     gap: 10px;
   }
 
-  .brand-logo {
-    width: 88px;
-    height: 88px;
-    padding: 8px;
-  }
+  
 
   .brand-text h1 {
     font-size: 1.4rem;
